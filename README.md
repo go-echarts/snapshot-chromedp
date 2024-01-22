@@ -16,7 +16,7 @@ DevTools Protocol, which means this extension works under Chrome DevTools Protoc
 ## Install
 
 ```go
-require github.com/go -echarts/snapshot-chromedp v0.0.1
+require github.com/go-echarts/snapshot-chromedp v0.0.1
 ```
 
 ## Configuration
@@ -29,12 +29,10 @@ Normally, if you only need render the chart to image, the handy call is enough.
 
 By default, it will generate the HTML content first and do the snapshot, clean the HTML then.
 
-If you want have full control on it, the whole config list here.
+If you want to have full control on it, the whole config list here.
 
 ```go
 type SnapshotConfig struct {
-    // Renderer canvas or svg, not used for now
-    Renderer string
     // RenderContent the content bytes of charts after rendered
     RenderContent []byte
     // Path the path to save image
