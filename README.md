@@ -11,7 +11,7 @@
 The `snapshot-chromedp` is powered by the [`chromedp`](https://github.com/chromedp/chromedp)
 which enable to snapshot charts in HTML to images.  
 [`chromedp`](https://github.com/chromedp/chromedp) is a faster, simpler way to drive browsers supporting the Chrome
-DevTools Protocol, which means this extension only works with Chrome.
+DevTools Protocol, which means this extension works under Chrome DevTools Protocol supporting.
 
 ## Install
 
@@ -121,6 +121,8 @@ func main() {
 	render.MakeChartSnapshot(barTooltipChart.RenderContent(), "my-bar-tooltip.jpg")
 }
 ```
+
+> It only supports single charts for now, multi charts in one `Page` is WIP.
 
 # Special Thanks
 
