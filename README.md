@@ -15,6 +15,8 @@ DevTools Protocol, which means this extension works under Chrome DevTools Protoc
 
 ## Install
 
+> Support since go-echarts v2.4.0-rc1
+
 ```go
 require github.com/go-echarts/snapshot-chromedp v0.0.1
 ```
@@ -81,6 +83,7 @@ func barTitle() *charts.Bar {
 		charts.WithInitializationOpts(opts.Initialization{
 			BackgroundColor: "#FFFFFF",
 		}),
+		// Don't forget disable the Animation
 		charts.WithAnimation(false),
 		charts.WithTitleOpts(opts.Title{
 			Title:    "title and legend options",
@@ -100,9 +103,6 @@ func barTooltip() *charts.Bar {
 	bar := charts.NewBar()
 	bar.SetGlobalOptions(
 		charts.WithAnimation(false),
-		charts.WithInitializationOpts(opts.Initialization{
-			BackgroundColor: "#F0F8FF",
-		}),
 		charts.WithTitleOpts(opts.Title{Title: "tooltip options"}),
 		charts.WithLegendOpts(opts.Legend{Right: "80px"}),
 	)
