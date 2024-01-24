@@ -92,14 +92,12 @@ func MakeSnapshot(config *SnapshotConfig) error {
 
 	f, err := os.Create(htmlFullPath)
 	if err != nil {
-		log.Fatal(err)
 		return err
 	}
 
 	_, err = io.MultiWriter(f).Write(content)
 
 	if err != nil {
-		log.Fatal(err)
 		return err
 	}
 
@@ -117,13 +115,11 @@ func MakeSnapshot(config *SnapshotConfig) error {
 	)
 
 	if err != nil {
-		log.Fatal(err)
 		return err
 	}
 
 	imgContent, err := base64.StdEncoding.DecodeString(strings.Split(base64Data, ",")[1])
 	if err != nil {
-		log.Fatal(err)
 		return err
 	}
 
