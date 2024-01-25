@@ -79,7 +79,7 @@ func MakeSnapshot(config *SnapshotConfig) error {
 	)
 	defer cancel()
 
-	htmlFullPath := fmt.Sprintf("%s/%s.%s", htmlPath, fileName, HTML)
+	htmlFullPath := filepath.Join(htmlPath, fileName+"."+HTML)
 
 	if !keepHtml {
 		defer func() {
