@@ -37,7 +37,7 @@ type SnapshotConfig struct {
 	HtmlPath string
 }
 
-func MakeChartSnapshot(content []byte, image string) {
+func MakeChartSnapshot(content []byte, image string) error {
 	path, file := filepath.Split(image)
 	suffix := filepath.Ext(file)[1:]
 	fileName := file[0 : len(file)-len(suffix)-1]
@@ -50,7 +50,7 @@ func MakeChartSnapshot(content []byte, image string) {
 		Quality:       1,
 		KeepHtml:      false,
 	}
-	_ = MakeSnapshot(config)
+	return MakeSnapshot(config)
 }
 
 func MakeSnapshot(config *SnapshotConfig) error {
@@ -79,7 +79,7 @@ func MakeSnapshot(config *SnapshotConfig) error {
 	)
 	defer cancel()
 
-	htmlFullPath := fmt.Sprintf("%s/%s.%s", htmlPath, fileName, HTML)
+	htmlFullPath := filepath.Join(htmlPath, fileName+"."+HTML)
 
 	if !keepHtml {
 		defer func() {
@@ -92,13 +92,13 @@ func MakeSnapshot(config *SnapshotConfig) error {
 
 	f, err := os.Create(htmlFullPath)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	_, err = io.MultiWriter(f).Write(content)
 
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	if quality < 1 {
@@ -115,12 +115,12 @@ func MakeSnapshot(config *SnapshotConfig) error {
 	)
 
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	imgContent, err := base64.StdEncoding.DecodeString(strings.Split(base64Data, ",")[1])
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	imageFullPath := fmt.Sprintf("%s/%s.%s", path, fileName, suffix)
