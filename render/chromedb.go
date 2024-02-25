@@ -5,7 +5,6 @@ import (
 	"encoding/base64"
 	"fmt"
 	"github.com/chromedp/chromedp"
-	"io"
 	"log"
 	"os"
 	"path/filepath"
@@ -90,12 +89,10 @@ func MakeSnapshot(config *SnapshotConfig) error {
 		}()
 	}
 
-	f, err := os.Create(htmlFullPath)
+	err := os.WriteFile(htmlFullPath, content, 0644)
 	if err != nil {
 		return err
 	}
-
-	_, err = io.MultiWriter(f).Write(content)
 
 	if err != nil {
 		return err
