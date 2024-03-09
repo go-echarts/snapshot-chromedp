@@ -2,25 +2,24 @@ package render
 
 import (
 	_ "embed"
-	"github.com/go-echarts/snapshot-chromedp/asset"
 	"os"
 	"testing"
+
+	"github.com/go-echarts/snapshot-chromedp/asset"
 )
 
 // TODO: integration in ci
 func TestFileCreation(t *testing.T) {
-
 	fileName := "mock"
 	fileImage := fileName + ".png"
 	fileHtml := fileName + ".html"
 
 	err := MakeChartSnapshot(asset.RenderContent(), fileImage)
-
 	if err != nil {
 		t.Fatalf("Failed to create file: %s", err)
 	}
 
-	//defer os.Remove(fileImage)
+	// defer os.Remove(fileImage)
 
 	_, err = os.Stat(fileImage)
 	if os.IsNotExist(err) {
