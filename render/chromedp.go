@@ -4,18 +4,21 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
-	"github.com/chromedp/chromedp"
 	"log"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/chromedp/chromedp"
 )
 
-const HTML = "html"
-const FileProtocol = "file://"
-const EchartsInstanceDom = "div[_echarts_instance_]"
-const CanvasJs = "echarts.getInstanceByDom(document.querySelector('div[_echarts_instance_]'))" +
-	".getDataURL({type: '%s', pixelRatio: %d, excludeComponents: ['toolbox']})"
+const (
+	HTML               = "html"
+	FileProtocol       = "file://"
+	EchartsInstanceDom = "div[_echarts_instance_]"
+	CanvasJs           = "echarts.getInstanceByDom(document.querySelector('div[_echarts_instance_]'))" +
+		".getDataURL({type: '%s', pixelRatio: %d, excludeComponents: ['toolbox']})"
+)
 
 type SnapshotConfig struct {
 	// Renderer canvas or svg, not used for now
@@ -73,9 +76,7 @@ func MakeSnapshot(config *SnapshotConfig) error {
 		htmlPath, _ = filepath.Abs(htmlPath)
 	}
 
-	ctx, cancel := chromedp.NewContext(
-		context.Background(),
-	)
+	ctx, cancel := chromedp.NewContext(context.Background())
 	defer cancel()
 
 	htmlFullPath := filepath.Join(htmlPath, fileName+"."+HTML)
@@ -84,16 +85,12 @@ func MakeSnapshot(config *SnapshotConfig) error {
 		defer func() {
 			err := os.Remove(htmlFullPath)
 			if err != nil {
-				log.Printf("Failed to delete the file: %s\n", err)
+				log.Printf("Failed to delete the file(%s), err: %s\n", htmlFullPath, err)
 			}
 		}()
 	}
 
-	err := os.WriteFile(htmlFullPath, content, 0644)
-	if err != nil {
-		return err
-	}
-
+	err := os.WriteFile(htmlFullPath, content, 0o644)
 	if err != nil {
 		return err
 	}
@@ -102,15 +99,13 @@ func MakeSnapshot(config *SnapshotConfig) error {
 		quality = 1
 	}
 
-	executeJS := fmt.Sprintf(CanvasJs, suffix, quality)
-
 	var base64Data string
+	executeJS := fmt.Sprintf(CanvasJs, suffix, quality)
 	err = chromedp.Run(ctx,
 		chromedp.Navigate(fmt.Sprintf("%s%s", FileProtocol, htmlFullPath)),
 		chromedp.WaitVisible(EchartsInstanceDom, chromedp.ByQuery),
 		chromedp.Evaluate(executeJS, &base64Data),
 	)
-
 	if err != nil {
 		return err
 	}
@@ -120,10 +115,9 @@ func MakeSnapshot(config *SnapshotConfig) error {
 		return err
 	}
 
-	imageFullPath := fmt.Sprintf("%s/%s.%s", path, fileName, suffix)
-
-	if err := os.WriteFile(imageFullPath, imgContent, 0644); err != nil {
-		log.Fatal(err)
+	imageFullPath := filepath.Join(path, fmt.Sprintf("%s.%s", fileName, suffix))
+	if err := os.WriteFile(imageFullPath, imgContent, 0o644); err != nil {
+		return err
 	}
 
 	log.Printf("Wrote %s.%s success", fileName, suffix)
