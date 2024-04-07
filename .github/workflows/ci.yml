@@ -3,15 +3,19 @@ name: Testing
 on:
   workflow_dispatch:
   push:
-    branches: [ "main, workflow" ]
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
 jobs:
-  init:
+  run-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Set up Chrome headless
+        run: |
+          docker run -d --network host --rm --name headless-shell docker.io/chromedp/headless-shell
+
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
@@ -20,14 +24,8 @@ jobs:
       - name: Build
         run: go build -v ./...
 
-
-  test:
-    runs-on: ubuntu-latest
-    container:
-      image: docker.io/chromedp/headless-shell:latest
-      ports:
-        - 9222
-    steps:
       - name: Test
-        run: go test -v ./...
+        run: |
+          go test -v ./...
+          ls render
 
