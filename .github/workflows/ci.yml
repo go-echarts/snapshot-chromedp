@@ -1,0 +1,31 @@
+name: Testing
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  run-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Chrome headless
+        run: |
+          docker run -d --network host --rm --name headless-shell docker.io/chromedp/headless-shell
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.18'
+
+      - name: Build
+        run: go build -v ./...
+
+      - name: Test
+        run: |
+          go test -v ./...
+          ls render
+
