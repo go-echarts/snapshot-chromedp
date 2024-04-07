@@ -54,6 +54,10 @@ type SnapshotConfig struct {
 
 ## Example
 
+
+> [!NOTE]
+> You must disable the chart's `Animation` option to ensure the chart being rendered immediately.
+
 ```go
 package main
 
