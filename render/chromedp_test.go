@@ -8,7 +8,6 @@ import (
 	"github.com/go-echarts/snapshot-chromedp/asset"
 )
 
-// TODO: integration in ci
 func TestFileCreation(t *testing.T) {
 	fileName := "mock"
 	fileImage := fileName + ".png"
@@ -18,8 +17,6 @@ func TestFileCreation(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create file: %s", err)
 	}
-
-	// defer os.Remove(fileImage)
 
 	_, err = os.Stat(fileImage)
 	if os.IsNotExist(err) {
