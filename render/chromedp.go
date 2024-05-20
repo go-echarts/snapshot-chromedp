@@ -39,7 +39,12 @@ type SnapshotConfig struct {
 	HtmlPath string
 }
 
+// Deprecated: use MakeChartSnapshotWithContent instead
 func MakeChartSnapshot(content []byte, image string) error {
+	return MakeChartSnapshotWithContent(content, image, context.Background())
+}
+
+func MakeChartSnapshotWithContent(content []byte, image string, ctx context.Context) error {
 	path, file := filepath.Split(image)
 	suffix := filepath.Ext(file)[1:]
 	fileName := file[0 : len(file)-len(suffix)-1]
@@ -52,10 +57,14 @@ func MakeChartSnapshot(content []byte, image string) error {
 		Quality:       1,
 		KeepHtml:      false,
 	}
-	return MakeSnapshot(config)
+	return MakeSnapshotWithContent(config, ctx)
 }
 
 func MakeSnapshot(config *SnapshotConfig) error {
+	return MakeSnapshotWithContent(config, context.Background())
+}
+
+func MakeSnapshotWithContent(config *SnapshotConfig, ctx context.Context) error {
 	path := config.Path
 	fileName := config.FileName
 	content := config.RenderContent
@@ -76,7 +85,7 @@ func MakeSnapshot(config *SnapshotConfig) error {
 		htmlPath, _ = filepath.Abs(htmlPath)
 	}
 
-	ctx, cancel := chromedp.NewContext(context.Background())
+	ctx, cancel := chromedp.NewContext(ctx)
 	defer cancel()
 
 	htmlFullPath := filepath.Join(htmlPath, fileName+"."+HTML)

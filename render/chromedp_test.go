@@ -1,6 +1,7 @@
 package render
 
 import (
+	"context"
 	_ "embed"
 	"os"
 	"testing"
@@ -13,7 +14,7 @@ func TestFileCreation(t *testing.T) {
 	fileImage := fileName + ".png"
 	fileHtml := fileName + ".html"
 
-	err := MakeChartSnapshot(asset.RenderContent(), fileImage)
+	err := MakeChartSnapshotWithContent(asset.RenderContent(), fileImage, context.Background())
 	if err != nil {
 		t.Fatalf("Failed to create file: %s", err)
 	}
