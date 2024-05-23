@@ -49,7 +49,7 @@ type SnapshotConfig struct {
     KeepHtml bool
     // HtmlPath where to keep the generated html, default same to image path
     HtmlPath string
-	// Timeout  the timeout config
+    // Timeout  the timeout config
     Timeout time.Duration
 }
 ```
