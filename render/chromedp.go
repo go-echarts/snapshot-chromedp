@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/chromedp/chromedp"
 )
@@ -37,9 +38,13 @@ type SnapshotConfig struct {
 	KeepHtml bool
 	// HtmlPath where to keep the generated html, default same to image path
 	HtmlPath string
+	// Timeout  the timeout config
+	Timeout time.Duration
 }
 
-func MakeChartSnapshot(content []byte, image string) error {
+type SnapshotConfigOption func(config *SnapshotConfig)
+
+func NewSnapshotConfig(content []byte, image string, opts ...SnapshotConfigOption) *SnapshotConfig {
 	path, file := filepath.Split(image)
 	suffix := filepath.Ext(file)[1:]
 	fileName := file[0 : len(file)-len(suffix)-1]
@@ -51,8 +56,17 @@ func MakeChartSnapshot(content []byte, image string) error {
 		Suffix:        suffix,
 		Quality:       1,
 		KeepHtml:      false,
+		Timeout:       0,
 	}
-	return MakeSnapshot(config)
+
+	for _, o := range opts {
+		o(config)
+	}
+	return config
+}
+
+func MakeChartSnapshot(content []byte, image string) error {
+	return MakeSnapshot(NewSnapshotConfig(content, image))
 }
 
 func MakeSnapshot(config *SnapshotConfig) error {
@@ -63,6 +77,7 @@ func MakeSnapshot(config *SnapshotConfig) error {
 	suffix := config.Suffix
 	keepHtml := config.KeepHtml
 	htmlPath := config.HtmlPath
+	timeout := config.Timeout
 
 	if htmlPath == "" {
 		htmlPath = path
@@ -78,6 +93,11 @@ func MakeSnapshot(config *SnapshotConfig) error {
 
 	ctx, cancel := chromedp.NewContext(context.Background())
 	defer cancel()
+
+	if timeout != 0 {
+		ctx, cancel = context.WithTimeout(ctx, timeout)
+		defer cancel()
+	}
 
 	htmlFullPath := filepath.Join(htmlPath, fileName+"."+HTML)
 
