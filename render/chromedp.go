@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/chromedp/chromedp"
 )
@@ -37,14 +38,13 @@ type SnapshotConfig struct {
 	KeepHtml bool
 	// HtmlPath where to keep the generated html, default same to image path
 	HtmlPath string
+	// Timeout  the timeout config
+	Timeout time.Duration
 }
 
-// Deprecated: use MakeChartSnapshotWithContent instead
-func MakeChartSnapshot(content []byte, image string) error {
-	return MakeChartSnapshotWithContent(content, image, context.Background())
-}
+type SnapshotConfigOption func(config *SnapshotConfig)
 
-func MakeChartSnapshotWithContent(content []byte, image string, ctx context.Context) error {
+func NewSnapshotConfig(content []byte, image string, opts ...SnapshotConfigOption) *SnapshotConfig {
 	path, file := filepath.Split(image)
 	suffix := filepath.Ext(file)[1:]
 	fileName := file[0 : len(file)-len(suffix)-1]
@@ -56,15 +56,20 @@ func MakeChartSnapshotWithContent(content []byte, image string, ctx context.Cont
 		Suffix:        suffix,
 		Quality:       1,
 		KeepHtml:      false,
+		Timeout:       0,
 	}
-	return MakeSnapshotWithContent(config, ctx)
+
+	for _, o := range opts {
+		o(config)
+	}
+	return config
+}
+
+func MakeChartSnapshot(content []byte, image string) error {
+	return MakeSnapshot(NewSnapshotConfig(content, image))
 }
 
 func MakeSnapshot(config *SnapshotConfig) error {
-	return MakeSnapshotWithContent(config, context.Background())
-}
-
-func MakeSnapshotWithContent(config *SnapshotConfig, ctx context.Context) error {
 	path := config.Path
 	fileName := config.FileName
 	content := config.RenderContent
@@ -72,6 +77,7 @@ func MakeSnapshotWithContent(config *SnapshotConfig, ctx context.Context) error 
 	suffix := config.Suffix
 	keepHtml := config.KeepHtml
 	htmlPath := config.HtmlPath
+	timeout := config.Timeout
 
 	if htmlPath == "" {
 		htmlPath = path
@@ -85,8 +91,13 @@ func MakeSnapshotWithContent(config *SnapshotConfig, ctx context.Context) error 
 		htmlPath, _ = filepath.Abs(htmlPath)
 	}
 
-	ctx, cancel := chromedp.NewContext(ctx)
+	ctx, cancel := chromedp.NewContext(context.Background())
 	defer cancel()
+
+	if timeout != 0 {
+		ctx, cancel = context.WithTimeout(ctx, timeout)
+		defer cancel()
+	}
 
 	htmlFullPath := filepath.Join(htmlPath, fileName+"."+HTML)
 
