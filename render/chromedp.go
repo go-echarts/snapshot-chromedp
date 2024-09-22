@@ -124,6 +124,7 @@ func MakeSnapshot(config *SnapshotConfig) error {
 	err = chromedp.Run(ctx,
 		chromedp.Navigate(fmt.Sprintf("%s%s", FileProtocol, htmlFullPath)),
 		chromedp.WaitVisible(EchartsInstanceDom, chromedp.ByQuery),
+		chromedp.Sleep(3*time.Second),
 		chromedp.Evaluate(executeJS, &base64Data),
 	)
 	if err != nil {
