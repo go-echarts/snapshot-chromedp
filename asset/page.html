@@ -48,6 +48,36 @@
     goecharts_avTEFYCNhBPf.setOption(option_avTEFYCNhBPf);
 </script>
 
+<div class="container">
+    <div class="item" id="avTEFYCNhBPfl" style="width:900px;height:500px;"></div>
+</div>
+
+<script type="text/javascript">
+    "use strict";
+    let goecharts_avTEFYCNhBPfl = echarts.init(document.getElementById('avTEFYCNhBPfl'), "white", {renderer: "canvas"});
+    let option_avTEFYCNhBPfl = {
+            "animation": false,
+            "color": ["#5470c6", "#91cc75", "#fac858", "#ee6666", "#73c0de", "#3ba272", "#fc8452", "#9a60b4", "#ea7ccc"],
+            "legend": {},
+            "series": [{
+                "name": "Category A",
+                "type": "line",
+                "data": [{"value": 177}, {"value": 131}, {"value": 148}, {"value": 124}, {"value": 237}, {"value": 140}, {"value": 293}]
+            }, {
+                "name": "Category B",
+                "type": "line",
+                "data": [{"value": 22}, {"value": 198}, {"value": 156}, {"value": 131}, {"value": 164}, {"value": 274}, {"value": 32}]
+            }],
+            "title": {"text": "basic line example", "subtext": "This is the subtitle."},
+            "toolbox": {},
+            "tooltip": {},
+            "xAxis": [{"data": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]}],
+            "yAxis": [{}]
+        }
+    ;
+    goecharts_avTEFYCNhBPfl.setOption(option_avTEFYCNhBPfl);
+</script>
+
 
 </body>
 </html>

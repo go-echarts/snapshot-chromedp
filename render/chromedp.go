@@ -40,6 +40,8 @@ type SnapshotConfig struct {
 	HtmlPath string
 	// Timeout  the timeout config
 	Timeout time.Duration
+	// FullPage Only enable it when you have multi charts in the single page, better to set larger quality
+	FullPage bool
 }
 
 type SnapshotConfigOption func(config *SnapshotConfig)
@@ -119,18 +121,16 @@ func MakeSnapshot(config *SnapshotConfig) error {
 		quality = 1
 	}
 
-	var base64Data string
+	var imgContent []byte
 	executeJS := fmt.Sprintf(CanvasJs, suffix, quality)
-	err = chromedp.Run(ctx,
-		chromedp.Navigate(fmt.Sprintf("%s%s", FileProtocol, htmlFullPath)),
-		chromedp.WaitVisible(EchartsInstanceDom, chromedp.ByQuery),
-		chromedp.Evaluate(executeJS, &base64Data),
-	)
-	if err != nil {
-		return err
+	pagePath := fmt.Sprintf("%s%s", FileProtocol, htmlFullPath)
+
+	if true != config.FullPage {
+		imgContent, err = querySingleChartElm(ctx, pagePath, executeJS)
+	} else {
+		imgContent, err = snapshotFullPage(ctx, pagePath, quality)
 	}
 
-	imgContent, err := base64.StdEncoding.DecodeString(strings.Split(base64Data, ",")[1])
 	if err != nil {
 		return err
 	}
@@ -142,4 +142,33 @@ func MakeSnapshot(config *SnapshotConfig) error {
 
 	log.Printf("Wrote %s.%s success", fileName, suffix)
 	return nil
+}
+
+func querySingleChartElm(ctx context.Context, pagePath string, executeJS string) ([]byte, error) {
+	var base64Data string
+	var imageContent []byte
+	err := chromedp.Run(ctx,
+		chromedp.Navigate(pagePath),
+		chromedp.WaitVisible(EchartsInstanceDom, chromedp.ByQuery),
+		chromedp.Evaluate(executeJS, &base64Data),
+	)
+
+	if err != nil {
+		return nil, err
+	}
+	imageContent, err = base64.StdEncoding.DecodeString(strings.Split(base64Data, ",")[1])
+	return imageContent, err
+
+}
+
+func snapshotFullPage(ctx context.Context, pagePath string, quality int) ([]byte, error) {
+	var imageContent []byte
+	err := chromedp.Run(ctx,
+		chromedp.Navigate(pagePath),
+		chromedp.WaitVisible(EchartsInstanceDom, chromedp.ByQuery),
+		chromedp.FullScreenshot(&imageContent, quality),
+	)
+
+	return imageContent, err
+
 }

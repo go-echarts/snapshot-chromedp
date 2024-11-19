@@ -49,8 +49,10 @@ type SnapshotConfig struct {
     KeepHtml bool
     // HtmlPath where to keep the generated html, default same to image path
     HtmlPath string
-    // Timeout  the timeout config
-    Timeout time.Duration
+	// Timeout  the timeout config
+    Timeout time.Duration  
+	// FullPage ONLY enable it when you have multi charts in the single page, better to set larger quality
+	FullPage bool
 }
 ```
 
@@ -126,7 +128,19 @@ func main() {
 }
 ```
 
-> It only supports single charts for now, multi charts in one `Page` is WIP.
+Multi charts in one `Page` is also available now. Please make sure each chart animation disabled.
+You can simply enable it for a full page snapshot by:
+
+```go
+render.MakeSnapshot(NewSnapshotConfig(asset.RenderPageContent(), fileImage, func(config *SnapshotConfig) {
+	    // enable the full page snapshot
+		config.FullPage = true
+		// higher quality
+		config.Quality = 100
+	})
+
+```
+
 
 # Special Thanks
 
