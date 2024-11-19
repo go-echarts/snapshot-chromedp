@@ -128,13 +128,13 @@ func main() {
 }
 ```
 
-Snapshot multi charts in one `Page` is also available now.
-Please make sure each chart animation disabled.
-You can simply enable it for multi charts snapshot by:
+Snapshot multi charts in one `Page` is also available now.  
+Please also make sure each chart animation disabled.  
+You can simply enable it by:
 
 ```go
 render.MakeSnapshot(NewSnapshotConfig(asset.RenderPageContent(), fileImage, func(config *SnapshotConfig) {
-	        // enable the multi charts within page snapshot mode
+	        // current page contains multi charts
 		config.MultiCharts = true
 		// higher quality
 		config.Quality = 100
