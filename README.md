@@ -18,7 +18,7 @@ DevTools Protocol, which means this extension works under Chrome DevTools Protoc
 > Support since go-echarts v2.4.0-rc1
 
 ```go
-require github.com/go-echarts/snapshot-chromedp v0.0.4
+require github.com/go-echarts/snapshot-chromedp v0.0.5
 ```
 
 ## Configuration
