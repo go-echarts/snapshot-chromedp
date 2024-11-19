@@ -66,3 +66,29 @@ func TestFileCreationWithTimeout(t *testing.T) {
 		t.Fatalf("Can not cancel for creating file with timeout config: %s", fileName)
 	}
 }
+
+func TestPageCreation(t *testing.T) {
+	fileName := "page"
+	fileImage := fileName + ".png"
+	fileHtml := fileName + ".html"
+
+	err := MakeSnapshot(NewSnapshotConfig(asset.RenderPageContent(), fileImage, func(config *SnapshotConfig) {
+		config.MultiCharts = true
+		config.Quality = 100
+	}))
+
+	if err != nil {
+		t.Fatalf("Failed to create file: %s", err)
+	}
+
+	_, err = os.Stat(fileImage)
+	if os.IsNotExist(err) {
+		t.Fatalf("Image File was exist")
+	}
+
+	_, err = os.Stat(fileHtml)
+	if os.IsExist(err) {
+		t.Fatalf("Html File was not exist")
+	}
+
+}

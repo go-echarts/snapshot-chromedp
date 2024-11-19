@@ -51,6 +51,8 @@ type SnapshotConfig struct {
     HtmlPath string
     // Timeout  the timeout config
     Timeout time.Duration
+    // MultiCharts ONLY enable it when you have multi charts in the single page, better to set larger quality
+    MultiCharts bool
 }
 ```
 
@@ -126,7 +128,20 @@ func main() {
 }
 ```
 
-> It only supports single charts for now, multi charts in one `Page` is WIP.
+Snapshot multi charts in one `Page` is also available now.  
+Please also make sure each chart animation disabled.  
+You can simply enable it by:
+
+```go
+render.MakeSnapshot(NewSnapshotConfig(asset.RenderPageContent(), fileImage, func(config *SnapshotConfig) {
+	        // current page contains multi charts
+		config.MultiCharts = true
+		// higher quality
+		config.Quality = 100
+	})
+
+```
+
 
 # Special Thanks
 
