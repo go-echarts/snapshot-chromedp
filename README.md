@@ -129,11 +129,11 @@ func main() {
 ```
 
 Multi charts in one `Page` is also available now. Please make sure each chart animation disabled.
-You can simply enable it for a full page snapshot by:
+You can simply enable it for multi charts snapshot by:
 
 ```go
 render.MakeSnapshot(NewSnapshotConfig(asset.RenderPageContent(), fileImage, func(config *SnapshotConfig) {
-	        // enable the full page snapshot mode
+	        // enable the multi charts within page snapshot mode
 		config.MultiCharts = true
 		// higher quality
 		config.Quality = 100
