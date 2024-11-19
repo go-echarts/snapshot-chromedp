@@ -128,7 +128,8 @@ func main() {
 }
 ```
 
-Multi charts in one `Page` is also available now. Please make sure each chart animation disabled.
+Snapshot multi charts in one `Page` is also available now.
+Please make sure each chart animation disabled.
 You can simply enable it for multi charts snapshot by:
 
 ```go
