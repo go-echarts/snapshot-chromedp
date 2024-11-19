@@ -73,7 +73,7 @@ func TestPageCreation(t *testing.T) {
 	fileHtml := fileName + ".html"
 
 	err := MakeSnapshot(NewSnapshotConfig(asset.RenderPageContent(), fileImage, func(config *SnapshotConfig) {
-		config.FullPage = true
+		config.MultiCharts = true
 		config.Quality = 100
 	}))
 

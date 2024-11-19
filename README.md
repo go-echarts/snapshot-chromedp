@@ -51,8 +51,8 @@ type SnapshotConfig struct {
     HtmlPath string
     // Timeout  the timeout config
     Timeout time.Duration
-    // FullPage ONLY enable it when you have multi charts in the single page, better to set larger quality
-    FullPage bool
+    // MultiCharts ONLY enable it when you have multi charts in the single page, better to set larger quality
+    MultiCharts bool
 }
 ```
 
@@ -134,7 +134,7 @@ You can simply enable it for a full page snapshot by:
 ```go
 render.MakeSnapshot(NewSnapshotConfig(asset.RenderPageContent(), fileImage, func(config *SnapshotConfig) {
 	        // enable the full page snapshot mode
-		config.FullPage = true
+		config.MultiCharts = true
 		// higher quality
 		config.Quality = 100
 	})

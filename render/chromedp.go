@@ -40,8 +40,8 @@ type SnapshotConfig struct {
 	HtmlPath string
 	// Timeout  the timeout config
 	Timeout time.Duration
-	// FullPage Only enable it when you have multi charts in the single page, better to set larger quality
-	FullPage bool
+	// MultiCharts Only enable it when you have multi charts in the single page, better to set larger quality
+	MultiCharts bool
 }
 
 type SnapshotConfigOption func(config *SnapshotConfig)
@@ -125,10 +125,10 @@ func MakeSnapshot(config *SnapshotConfig) error {
 	executeJS := fmt.Sprintf(CanvasJs, suffix, quality)
 	pagePath := fmt.Sprintf("%s%s", FileProtocol, htmlFullPath)
 
-	if true != config.FullPage {
-		imgContent, err = querySingleChartElm(ctx, pagePath, executeJS)
+	if true != config.MultiCharts {
+		imgContent, err = snapshotSingleChart(ctx, pagePath, executeJS)
 	} else {
-		imgContent, err = snapshotFullPage(ctx, pagePath, quality)
+		imgContent, err = snapshotMultiCharts(ctx, pagePath, quality)
 	}
 
 	if err != nil {
@@ -144,7 +144,7 @@ func MakeSnapshot(config *SnapshotConfig) error {
 	return nil
 }
 
-func querySingleChartElm(ctx context.Context, pagePath string, executeJS string) ([]byte, error) {
+func snapshotSingleChart(ctx context.Context, pagePath string, executeJS string) ([]byte, error) {
 	var base64Data string
 	var imageContent []byte
 	err := chromedp.Run(ctx,
@@ -161,7 +161,7 @@ func querySingleChartElm(ctx context.Context, pagePath string, executeJS string)
 
 }
 
-func snapshotFullPage(ctx context.Context, pagePath string, quality int) ([]byte, error) {
+func snapshotMultiCharts(ctx context.Context, pagePath string, quality int) ([]byte, error) {
 	var imageContent []byte
 	err := chromedp.Run(ctx,
 		chromedp.Navigate(pagePath),
