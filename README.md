@@ -133,8 +133,8 @@ Please also make sure each chart animation disabled.
 You can simply enable it by:
 
 ```go
-render.MakeSnapshot(NewSnapshotConfig(asset.RenderPageContent(), fileImage, func(config *SnapshotConfig) {
-	        // current page contains multi charts
+render.MakeSnapshot(NewSnapshotConfig(myPage.RenderContent(), fileImage, func(config *SnapshotConfig) {
+        // current page contains multi charts
 		config.MultiCharts = true
 		// higher quality
 		config.Quality = 100
