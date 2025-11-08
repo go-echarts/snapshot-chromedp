@@ -147,6 +147,7 @@ func MakeSnapshot(config *SnapshotConfig) error {
 func snapshotSingleChart(ctx context.Context, pagePath string, executeJS string) ([]byte, error) {
 	var base64Data string
 	var imageContent []byte
+	chromedp.Flag("no-sandbox", true)
 	err := chromedp.Run(ctx,
 		chromedp.Navigate(pagePath),
 		chromedp.WaitVisible(EchartsInstanceDom, chromedp.ByQuery),
@@ -163,6 +164,7 @@ func snapshotSingleChart(ctx context.Context, pagePath string, executeJS string)
 
 func snapshotMultiCharts(ctx context.Context, pagePath string, quality int) ([]byte, error) {
 	var imageContent []byte
+	chromedp.Flag("no-sandbox", true)
 	err := chromedp.Run(ctx,
 		chromedp.Navigate(pagePath),
 		chromedp.WaitVisible(EchartsInstanceDom, chromedp.ByQuery),
