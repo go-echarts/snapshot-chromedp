@@ -18,11 +18,11 @@ jobs:
 
       - name: Set up Go
         uses: actions/setup-go@v5
-#        with:
-#          go-version: '1.18'
+        with:
+          go-version: '1.18'
 
       - name: Build
-        run: go mod tidy && go build -v ./...
+        run: go build -v ./...
 
       - name: Test
         run: |
