@@ -145,30 +145,32 @@ func MakeSnapshot(config *SnapshotConfig) error {
 }
 
 func snapshotSingleChart(ctx context.Context, pagePath string, executeJS string) ([]byte, error) {
-	var base64Data string
-	var imageContent []byte
-	err := chromedp.Run(ctx,
+	_, err := chromedp.Run(ctx, chromedp.Steps(
 		chromedp.Navigate(pagePath),
-		chromedp.WaitVisible(EchartsInstanceDom, chromedp.ByQuery),
-		chromedp.Evaluate(executeJS, &base64Data),
-	)
-
+		chromedp.WaitVisible(chromedp.CSS(EchartsInstanceDom)),
+	))
 	if err != nil {
 		return nil, err
 	}
-	imageContent, err = base64.StdEncoding.DecodeString(strings.Split(base64Data, ",")[1])
-	return imageContent, err
 
+	base64Data, err := chromedp.Run(ctx, chromedp.Evaluate[string](executeJS))
+	if err != nil {
+		return nil, err
+	}
+
+	imageContent, err := base64.StdEncoding.DecodeString(strings.Split(base64Data, ",")[1])
+	return imageContent, err
 }
 
 func snapshotMultiCharts(ctx context.Context, pagePath string, quality int) ([]byte, error) {
-	var imageContent []byte
-	err := chromedp.Run(ctx,
+	_, err := chromedp.Run(ctx, chromedp.Steps(
 		chromedp.Navigate(pagePath),
-		chromedp.WaitVisible(EchartsInstanceDom, chromedp.ByQuery),
-		chromedp.FullScreenshot(&imageContent, quality),
-	)
+		chromedp.WaitVisible(chromedp.CSS(EchartsInstanceDom)),
+	))
+	if err != nil {
+		return nil, err
+	}
 
+	imageContent, err := chromedp.Run(ctx, chromedp.FullScreenshot(quality))
 	return imageContent, err
-
 }
